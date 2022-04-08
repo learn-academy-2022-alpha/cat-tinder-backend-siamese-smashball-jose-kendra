@@ -25,10 +25,11 @@ class CharactersController < ApplicationController
 
     def destroy
         character = Character.find(params[:id])
-   		if character.destroy
-   		render json: character
+   		if 
+            character.destroy
+   		    render json: character
    		else 
-   		render json: character.errors
+   		    render json: character.errors
         end
     end
 
