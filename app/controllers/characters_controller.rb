@@ -9,7 +9,7 @@ class CharactersController < ApplicationController
         if character.valid?
         render json: character
         else 
-        render json: character.errors
+        render json: character.errors, status: 422
         end
     end
 
