@@ -32,7 +32,7 @@ RSpec.describe "Characters", type: :request do
       expect(response).to have_http_status(200)
 
       character = Character.first
-      expect(character.name). to eq 'Jose'
+      expect(character.name).to eq 'Jose'
     end
   end
 
@@ -62,7 +62,7 @@ image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jp
   describe "DELETE /destroy" do
     it "deletes a character" do
       Character.create(
-        name: 'Kendra',
+          name: 'Kendra',
           age: 5,
           enjoys: 'running and playing',
           image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
