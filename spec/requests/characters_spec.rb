@@ -6,7 +6,7 @@ RSpec.describe "Characters", type: :request do
       Character.create(
         name: 'Jose',
         age: '5',
-        enjoys: 'running',
+        enjoys: 'running and playing',
         image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
       )
       get '/characters'
@@ -23,7 +23,7 @@ RSpec.describe "Characters", type: :request do
         character: {
         name: 'Jose',
         age: '5',
-        enjoys: 'running',
+        enjoys: 'running and playing',
         image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
         }
       }
@@ -32,13 +32,14 @@ RSpec.describe "Characters", type: :request do
       expect(response).to have_http_status(200)
 
       character = Character.first
-      expect(character.name). to eq 'Jose'
+      expect(character.name).to eq 'Jose'
     end
   end
 
   describe "PATCH /update" do
     it"edits an existing character" do
-      Character.create name:'Jose', age: 5, enjoys: 'running', image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
+      Character.create name:'Jose', age: 5, enjoys: 'running and playing',
+image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
 
       update_example = Character.first
 
@@ -46,7 +47,7 @@ RSpec.describe "Characters", type: :request do
         character: {
           name: 'Kendra',
           age: 5,
-          enjoys: 'running',
+          enjoys: 'running and playing',
           image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
         }
       }
@@ -58,27 +59,12 @@ RSpec.describe "Characters", type: :request do
     end
   end
 
-  # describe 'DELETE/destroy' do	
-	#   it 'deletes a character from the DB' do
-	#     Character.create name:'Jose', age: 5, enjoys: 'running', image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
-	
-	#     new_char = Character.first
-
-	#     delete “/characters/#{new_char.id}”
-	#     expect(response).to have_http_status(200)
-
-	#     characters = Character.all
-	#     expect(characters).to be_empty
-  #   end
-  # end
-
-
   describe "DELETE /destroy" do
     it "deletes a character" do
       Character.create(
-        name: 'Kendra',
+          name: 'Kendra',
           age: 5,
-          enjoys: 'running',
+          enjoys: 'running and playing',
           image: 'http://d279m997dpfwgl.cloudfront.net/wp/2017/11/jose-running-1000x800.jpg'
       )
       char_kendra = Character.first
@@ -86,6 +72,71 @@ RSpec.describe "Characters", type: :request do
       expect(response).to have_http_status(200)
       char = Character.all
       expect(char).to be_empty
+    end
+  end
+
+  describe 'cannot create a character without valid attributes'do 
+    it 'cannot create a character without a name 'do
+      character_params = {
+        character: {
+        age: 28,
+        enjoys: 'running and playing',
+        image: 'https://www.google.com'
+        }
+      }
+    post '/characters', params: character_params
+    json = JSON.parse(response.body)
+    expect(response.status).to eq 422
+    expect(json['name']).to include "can't be blank"
+    end
+  end
+
+describe 'cannot create a character without valid attributes'do 
+    it 'cannot create a character without an age 'do
+      character_params = {
+        character: {
+        name: 'Jose',
+        enjoys: 'running and playing',
+        image: 'https://www.google.com'
+        }
+      }
+    post '/characters', params: character_params
+    json = JSON.parse(response.body)
+    expect(response.status).to eq 422
+    expect(json['age']).to include "can't be blank"
+    end
+  end
+
+  describe 'cannot create a character without valid attributes'do 
+    it 'cannot create a character without a enjoys 'do
+      character_params = {
+        character: {
+        name: 'Jose',
+        age: 28,
+        image: 'https://www.google.com'
+        }
+      }
+    post '/characters', params: character_params
+    json = JSON.parse(response.body)
+    expect(response.status).to eq 422
+    expect(json['enjoys']).to include "can't be blank"
+    end
+  end
+
+
+describe 'cannot create a character without valid attributes'do 
+    it 'cannot create a character without a image 'do
+      character_params = {
+        character: {
+        name: 'Jose',
+        age: 28,
+        enjoys: 'Long naps on the couch, and a warm fire.'
+        }
+      }
+    post '/characters', params: character_params
+    json = JSON.parse(response.body)
+    expect(response.status).to eq 422
+    expect(json['image']).to include "can't be blank"
     end
   end
 end
